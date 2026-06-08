@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import logoSrc from './assets/30connect.svg';
+import logoSrc2 from './assets/30connect.png';
 
 // Add to your index.css:
 // @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap');
@@ -8,9 +9,36 @@ export default function LandingPage() {
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const getTargetDate = () => {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const julyFirst = new Date(currentYear, 6, 1, 0, 0, 0);
+      return now < julyFirst ? julyFirst : new Date(currentYear + 1, 6, 1, 0, 0, 0);
+    };
+
+    const targetDate = getTargetDate();
+
+    const updateCountdown = () => {
+      const now = new Date();
+      const diff = Math.max(0, targetDate - now);
+      const seconds = Math.floor((diff / 1000) % 60);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+      setCountdown({ days, hours, minutes, seconds });
+    };
+
+    updateCountdown();
+    const timer = setInterval(updateCountdown, 1000);
+    return () => clearInterval(timer);
   }, []);
 
   const handleSubmit = (e) => {
@@ -23,7 +51,7 @@ export default function LandingPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center px-6 py-16 relative overflow-hidden"
+      className="min-h-screen flex flex-col items-center justify-center px-6 py-5 relative overflow-hidden"
       style={{ backgroundColor: "#fdf6f0", fontFamily: "'DM Sans', sans-serif" }}
     >
       {/* Soft background blobs */}
@@ -37,7 +65,7 @@ export default function LandingPage() {
       />
 
       {/* Logo */}
-      <div className={`mb-6 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
+      <div className={`mb-1 transition-all duration-700 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}>
           <img 
             src={logoSrc} 
             alt="30 Connect" 
@@ -45,46 +73,47 @@ export default function LandingPage() {
           />
       </div>
 
+      
       {/* Heart + Heading */}
       <div
-        className={`relative flex flex-col items-center transition-all duration-700 delay-100 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
-      >
-        <div className="relative w-[280px] h-[265px] sm:w-[360px] sm:h-[340px] md:w-[460px] md:h-[435px] lg:w-[540px] lg:h-[510px] flex items-center justify-center">
-          <svg
-            viewBox="0 0 200 190"
-            className="absolute inset-0 w-full h-full"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <radialGradient id="heartGrad" cx="50%" cy="50%" r="55%">
-                <stop offset="0%"  stopColor="#f7a8a8" stopOpacity="1" />
-                <stop offset="60%" stopColor="#ef8080" stopOpacity="0.95" />
-                <stop offset="100%" stopColor="#d24051" stopOpacity="0.85" />
-              </radialGradient>
-            </defs>
-            <path
-              d="M100 170 C55 140 8 108 8 58 C8 28 30 8 58 8 C76 8 92 18 100 30 C108 18 124 8 142 8 C170 8 192 28 192 58 C192 108 145 140 100 170Z"
-              fill="url(#heartGrad)"
-            />
-          </svg>
+  className={`relative flex flex-col items-center transition-all duration-700 delay-100 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}
+>
+  <div className="relative flex items-center justify-center w-full max-w-[380px] mx-auto">
+    <svg
+      viewBox="0 0 200 190"
+      className="w-full h-auto"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <defs>
+        <radialGradient id="heartGrad" cx="50%" cy="50%" r="55%">
+          <stop offset="0%"  stopColor="#f7a8a8" stopOpacity="1" />
+          <stop offset="60%" stopColor="#ef8080" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="#d24051" stopOpacity="0.85" />
+        </radialGradient>
+      </defs>
+      <path
+        d="M100 170 C55 140 8 108 8 58 C8 28 30 8 58 8 C76 8 92 18 100 30 C108 18 124 8 142 8 C170 8 192 28 192 58 C192 108 145 140 100 170Z"
+        fill="url(#heartGrad)"
+      />
+    </svg>
 
-          {/* Text over heart */}
-          <div className="relative z-10 text-center pb-8">
-            <h1
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: "clamp(1.8rem, 8vw, 4.2rem)",
-                fontWeight: 900,
-                color: "#c50b0b",
-              }}
-            >
-              COMING
-              <br />
-              SOON...
-            </h1>
-          </div>
-        </div>
-      </div>
+    {/* Text over heart */}
+    <div className="absolute inset-0 flex items-center justify-center pb-8">
+      <h1
+        style={{
+          fontFamily: "'Playfair Display', serif",
+          fontSize: "clamp(1.2rem, 4vw, 2rem)",
+          fontWeight: 900,
+          color: "#c50b0b",
+        }}
+      >
+        COMING
+        <br />
+        SOON...
+      </h1>
+    </div>
+  </div>
+</div>
 
       {/* Tagline */}
       <div
@@ -148,6 +177,25 @@ export default function LandingPage() {
         <p className="text-center mt-4 text-sm" style={{ color: "#c07080" }}>
           www.30connect.com
         </p>
+      </div>
+      {/* Countdown */} 
+      <div className="mt-10 text-center px-4">
+        <div
+          className="inline-flex items-center justify-center gap-4 rounded-3xl border-2 border-[#f4a4a4] bg-white/80 px-6 py-5 text-center shadow-lg"
+          style={{ color: "#7a1424" }}
+        >
+          <div>
+            <div className="text-xs uppercase tracking-[0.3em] font-semibold" style={{ color: "#c05060" }}>
+              Launch countdown
+            </div>
+            <div className="mt-2 text-2xl sm:text-3xl font-extrabold" style={{ fontFamily: "'Playfair Display', serif" }}>
+              {countdown.days}d {countdown.hours}h {countdown.minutes}m {countdown.seconds}s
+            </div>
+            <div className="mt-2 text-sm text-[#a0162a]">
+              Until July 1st
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
